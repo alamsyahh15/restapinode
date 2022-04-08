@@ -5,5 +5,5 @@ module.exports = function (app) {
     app.route('/').get(myJson.index);
 
     // Route Mahsiswas
-    app.route('/mahasiswas').get(myJson.mahasiswas);
+    app.route('/mahasiswas/:id?').get(myJson.mahasiswas);
  }
