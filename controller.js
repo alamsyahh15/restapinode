@@ -38,4 +38,18 @@ exports.mahasiswas = function (req, res) {
             }
          })
     }
+}
+
+// Store Data
+exports.storeMahasiswa = function (req,res) { 
+    let nim = req.body.nim;
+    let name = req.body.name;
+    let faculty = req.body.faculty;
+
+    connection.query('INSERT INTO mahasiswa (nim, name, faculty) VALUES (?,?,?)', [nim,name,faculty], function (err,rows,field) {
+        if(err) 
+            console.log(err)
+        else
+            response.ok("Success created data", res); 
+    })
  }
