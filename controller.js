@@ -54,7 +54,7 @@ exports.storeMahasiswa = function (req, res) {
 };
 
 // Update Data
-exports.updateMahsiswa = function (req, res) {
+exports.updateMahasiswa = function (req, res) {
   var id = req.body.id_mahasiswa;
   var name = req.body.name;
   var faculty = req.body.faculty;
@@ -76,3 +76,17 @@ exports.updateMahsiswa = function (req, res) {
     }
   });
 };
+
+// Delete Data
+exports.deleteMahasiswa = function (req,res) { 
+  var id = req.body.id;
+
+  connection.query("DELETE FROM mahasiswa WHERE id_mahasiswa=?", [id], function (err, rows, field) {
+    if (err) {
+      console.log(err);
+      res.status(400).json({ error: err });
+    } else response.ok("Data successfully deleted", res);
+  });
+
+
+ }
