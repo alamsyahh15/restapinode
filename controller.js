@@ -1,6 +1,7 @@
 "use strict";
 
 var response = require("./res");
+var helper = require("./helper");
 var connection = require("./connection");
 
 exports.index = function (req, res) {
@@ -78,7 +79,7 @@ exports.updateMahasiswa = function (req, res) {
 };
 
 // Delete Data
-exports.deleteMahasiswa = function (req,res) { 
+exports.deleteMahasiswa = function (req, res) {
   var id = req.body.id;
 
   connection.query("DELETE FROM mahasiswa WHERE id_mahasiswa=?", [id], function (err, rows, field) {
@@ -87,6 +88,29 @@ exports.deleteMahasiswa = function (req,res) {
       res.status(400).json({ error: err });
     } else response.ok("Data successfully deleted", res);
   });
+};
 
+exports.detailMahasiswa = function (req, res) {
+  connection.query(
+    "SELECT mahasiswa.id_mahasiswa, mahasiswa.nim, mahasiswa.name, mahasiswa.faculty, course.name_course, course.credit_course FROM study_plan JOIN course JOIN mahasiswa WHERE study_plan.id_course = course.id_course AND study_plan.id_mahasiswa = mahasiswa.id_mahasiswa ORDER BY mahasiswa.id_mahasiswa",
+    function (err, rows, field) {
+      if (err) {
+        console.log(err);
+        res.status(400).json({ error: err });
+      } else {
+        var mahasiswas = helper.distincData(rows); // Distinc data 
 
- }
+        for (var i = 0; i < mahasiswas.length; i++) {
+          const mahasiswa = mahasiswas[i];
+          rows.forEach((data) => {
+            if (data.nim == mahasiswa.nim) {
+              mahasiswas[i].name_course.push(data.name_course); // Reduce course
+            }
+          });
+        }
+
+        res.status(200).json({ data: mahasiswas });
+      }
+    }
+  );
+};
